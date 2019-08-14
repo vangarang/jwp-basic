@@ -90,6 +90,7 @@ public class UserDAO {
     	Connection con = null;
         PreparedStatement pstmt = null;
         try {
+        	con = getConnection();
             String sql = "UPDATE USERS SET password = ?, name = ?, email = ? WHERE userId = ?";
             
             pstmt = getConnection().prepareStatement(sql);
