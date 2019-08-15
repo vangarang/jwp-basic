@@ -99,6 +99,13 @@ public class User {
 	public boolean matchPassword(String password) {
 		return this.password.equals(password);
 	}
+	
+	public boolean isSameUser(String userId) {
+		if(this.userId == null) {
+			return false;
+		}
+		return this.userId.equals(userId);
+	}
 
 	@Override
 	public int hashCode() {

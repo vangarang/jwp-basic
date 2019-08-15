@@ -1,6 +1,7 @@
 package next.web;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
+import org.apache.commons.beanutils.BeanUtilsBean;
+
 import core.db.DataBase;
 import next.dao.UserDAO;
 import next.model.User;
@@ -23,12 +26,14 @@ public class CreateUserServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String userId = req.getParameter("userId");
-		String password = req.getParameter("password");
-		String name = req.getParameter("name");
-		String email = req.getParameter("email");
 		
-		User user = new User(userId, password, name, email);
+		User user = new User();
+		try {
+			BeanUtilsBean.getInstance().populate(user, req.getParameterMap());
+		} catch (IllegalAccessException | InvocationTargetException e1) {
+			throw new ServletException(e1); 
+		}
+		
 		Validator validator = MyValidatorFactory.createValidator();
 		Set<ConstraintViolation<User>> constraintViolations = validator.validate( user );
 		if(constraintViolations.size() > 0) {
